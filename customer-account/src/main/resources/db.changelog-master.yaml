@@ -1,0 +1,141 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-import-batches
+      author: candidate
+      changes:
+        - createTable:
+            tableName: import_batches
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: imported_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: file_name
+                  type: varchar(255)
+              - column:
+                  name: total_rows
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: imported_rows
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: duplicate_rows
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: invalid_rows
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 002-create-account-checks
+      author: candidate
+      changes:
+        - createTable:
+            tableName: account_checks
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: batch_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_account_checks_batch
+                    references: import_batches(id)
+              - column:
+                  name: request_id
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_request_id
+              - column:
+                  name: customer_reference
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: submitted_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ownership_result
+                  type: varchar(50)
+              - column:
+                  name: extracted_cif
+                  type: varchar(50)
+              - column:
+                  name: status
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 003-create-identifiers
+      author: candidate
+      changes:
+        - createTable:
+            tableName: identifiers
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: account_check_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_identifiers_account_check
+                    references: account_checks(id)
+              - column:
+                  name: position
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: raw_value
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: identifier_type
+                  type: varchar(50)
+              - column:
+                  name: is_valid
+                  type: boolean
+                  defaultValueBoolean: false
+              - column:
+                  name: validation_error
+                  type: varchar(500)
+              - column:
+                  name: extracted_cif
+                  type: varchar(50)

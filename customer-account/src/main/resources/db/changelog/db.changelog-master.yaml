@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: starter-placeholder
+      author: progressoft
+      changes:
+        - sql:
+            sql: SELECT 1

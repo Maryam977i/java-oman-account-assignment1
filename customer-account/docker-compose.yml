@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: customer-account-postgres
+    environment:
+      POSTGRES_DB: customer_account
+      POSTGRES_USER: customer_account
+      POSTGRES_PASSWORD: customer_account
+    ports:
+      - "5432:5432"
+    volumes:
+      - customer-account-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U customer_account -d customer_account"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  customer-account-postgres-data:
